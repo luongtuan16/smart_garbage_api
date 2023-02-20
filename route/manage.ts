@@ -8,7 +8,7 @@ import { UserModel } from '../mongo/User';
 import { verifyAdminToken, verifyToken } from "./verifyToken";
 const router = express.Router();
 
-// get delete manage
+// delete manage by userId and binId
 router.post('/delete-manage', verifyToken, async (req, res) => {
     const { binId, userId } = <Manage>req.body;
     if (!binId || !userId)
