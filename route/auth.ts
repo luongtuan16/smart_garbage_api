@@ -1,9 +1,7 @@
-
-import express from 'express';
 import CryptoJs from 'crypto-js';
+import express from 'express';
 import jwt from 'jsonwebtoken';
 import { UserModel } from '../mongo/User';
-import User from '../models/User';
 
 const router = express.Router();
 
@@ -16,9 +14,9 @@ router.post('/register', async (req, res) => {
 
     try {
         const savedUser = await userModel.save();
-        res.status(200).json(savedUser);
+        return res.status(200).json(savedUser);
     } catch (error) {
-        res.status(500).json(error);
+        return res.status(500).json(error);
     }
 });
 
@@ -35,10 +33,11 @@ router.post('/login', async (req, res) => {
         const originalPassword = hashedPassword.toString(CryptoJs.enc.Utf8);
 
         try {
-            originalPassword !== req.body.password && res.status(500).json('Wrong password');
+            if (originalPassword !== req.body.password)
+                return res.status(500).json('Wrong password');
         } catch (error) {
             console.log('Exception when comparing password');
-            res.status(500).json('Wrong password');
+            return res.status(500).json('Wrong password');
         }
 
         const { password, ...others } = user._doc;
@@ -50,10 +49,10 @@ router.post('/login', async (req, res) => {
             process.env.JWT_KEY,
             { expiresIn: '3d' });
 
-        res.status(200).json({ ...others, token: accessToken });
+        return res.status(200).json({ ...others, token: accessToken });
 
     } catch (error) {
-        res.status(500).json(error);
+        return res.status(500).json(error);
     }
 });
 
