@@ -1,15 +1,23 @@
 import CryptoJs from 'crypto-js';
 import express from 'express';
 import jwt from 'jsonwebtoken';
+import User from '../models/User';
 import { UserModel } from '../mongo/User';
 
 const router = express.Router();
 
 //register
 router.post('/register', async (req, res) => {
+    const reqBody = <User>req.body;
+    if (!reqBody.username || !reqBody.password)
+        return res.status(401).json('Missing param');
+
+    const checkUser = await UserModel.findOne({ username: reqBody.username });
+    if (checkUser)
+        return res.status(301).json('User existed');
     const userModel = new UserModel({
-        ...req.body,
-        password: CryptoJs.AES.encrypt(req.body.password, process.env.SECRET_KEY)
+        ...reqBody,
+        password: CryptoJs.AES.encrypt(reqBody.password, process.env.SECRET_KEY)
     });
 
     try {
