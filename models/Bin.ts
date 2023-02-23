@@ -1,3 +1,5 @@
+import { STATUS_BIN_ACTIVE } from "../utils/constants";
+
 export default class Bin {
     _id: string;
     name: string;
@@ -9,6 +11,7 @@ export default class Bin {
     inorganics?: number[];
     recyclables?: number[];
     total?: number[];
+    status?: number;
     constructor(args: any) {
         console.log(args.organics)
         this._id = args._id ?? undefined;
@@ -21,5 +24,6 @@ export default class Bin {
         this.inorganics = args.inorganics?.map(i => Number(i)) ?? [];
         this.recyclables = args.recyclables?.map(i => Number(i)) ?? [];
         this.total = args.total?.map(i => Number(i)) ?? [];
+        this.status = args.status ?? STATUS_BIN_ACTIVE;
     }
 }

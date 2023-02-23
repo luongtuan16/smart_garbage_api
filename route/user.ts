@@ -15,7 +15,8 @@ router.put('/:id', verifyTokenAndPermission, (req, res) => {
         { $set: req.body },
         { new: true },
         (err, user: any) => {
-            err && res.status(400).json('Update failed');
+            if (err)
+                return res.status(400).json('Update failed');
             const { password, ...others } = user._doc;
             res.status(200).json(others);
         });
@@ -27,7 +28,8 @@ router.get('/:id', verifyTokenAndPermission, (req, res) => {
 
     UserModel.findById(req.params.id,
         (err, user) => {
-            err && res.status(400).json('Get User Failed');
+            if (err)
+                return res.status(400).json('Get User Failed');
 
             const { password, ...others } = user._doc;
 
@@ -54,7 +56,8 @@ router.get('/', verifyAdminToken, async (req, res) => {
 router.delete('/:id', verifyAdminToken, (req, res) => {
     UserModel.findByIdAndDelete(req.params.id,
         (err, data) => {
-            err && res.status(400).json('Delete User Failed');
+            if (err)
+                return res.status(400).json('Delete User Failed');
             res.status(200).json(data);
         })
 });

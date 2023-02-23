@@ -45,8 +45,13 @@ router.get('/', verifyAdminToken, async (req, res) => {
     const query = BinModel.find().sort({ createAt: "desc" }).skip(offset).limit(limit);
 
     query.exec((err, bins) => {
-        err && res.status(400).json('Get List bins Failed');
+        if (err)
+            return res.status(400).json('Get List bins Failed');
         const binResp = bins.map(bin => bin._doc);
+        binResp.forEach(bin => {
+            BinModel.findByIdAndUpdate(bin._id,
+                { $set: { status: 1 } },)
+        })
         res.status(200).json(binResp);
     });
 });
