@@ -5,7 +5,7 @@ import { BinModel } from "../mongo/Bin";
 import { TrashModel } from "../mongo/Trash";
 import { datesAreOnSameDay } from "./utils";
 
-export const jobTakeOutTrash = cron.schedule('*/5 * * * *', async () => {//every 5 min
+export const jobTakeOutTrash = cron.schedule('*/5 * * *', async () => {//every 5 hours
     //const numBin = Math.round(Math.random() * 3) + 1;
     const numBin = 1;
     const getRandomTrash = () => {
