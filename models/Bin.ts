@@ -11,9 +11,8 @@ export default class Bin {
     inorganics?: number[];
     recyclables?: number[];
     total?: number[];
-    status?: number;
+
     constructor(args: any) {
-        console.log(args.organics)
         this._id = args._id ?? undefined;
         this.name = args.name ?? '';
         this.address = args.address ?? '';
@@ -24,6 +23,6 @@ export default class Bin {
         this.inorganics = args.inorganics?.map(i => Number(i)) ?? [];
         this.recyclables = args.recyclables?.map(i => Number(i)) ?? [];
         this.total = args.total?.map(i => Number(i)) ?? [];
-        this.status = args.status ?? STATUS_BIN_ACTIVE;
+
     }
 }

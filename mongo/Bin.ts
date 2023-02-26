@@ -13,11 +13,6 @@ const binSchema = new Schema<BinDocument, Model<BinDocument>>({
     image: { type: String },
     lat: { type: Number, required: true },
     long: { type: Number, required: true },
-    organics: { type: [Number] },//currency: percent
-    inorganics: { type: [Number] },//currency: percent
-    recyclables: { type: [Number] },//currency: percent
-    total: { type: [Number] },//currency: percent
-    status: { type: Number, default: STATUS_BIN_ACTIVE },
 },
     { timestamps: true });
 

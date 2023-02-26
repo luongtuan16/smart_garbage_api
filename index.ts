@@ -8,6 +8,7 @@ import binRoute from './route/bin';
 
 import bodyParser from 'body-parser';
 import cors from 'cors';
+import { jobClearBin, jobTakeOutTrash } from "./utils/cron";
 
 const app = express();
 
@@ -32,6 +33,9 @@ app.use('/api/user', userRoute);
 app.use('/api/auth', authRoute);
 app.use('/api/manage', manageRoute);
 app.use('/api/bin', binRoute);
+
+jobTakeOutTrash.start();
+jobClearBin.start();
 
 app.listen(process.env.PORT, () => {
     console.log(`Example app listening on port ${process.env.PORT}`)
