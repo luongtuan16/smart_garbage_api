@@ -34,9 +34,9 @@ app.use('/api/auth', authRoute);
 app.use('/api/manage', manageRoute);
 app.use('/api/bin', binRoute);
 
-jobTakeOutTrash.start();
-jobClearBin.start();
-
 app.listen(process.env.PORT, () => {
     console.log(`Example app listening on port ${process.env.PORT}`)
-})
+});
+
+jobTakeOutTrash.start();
+jobClearBin.start();

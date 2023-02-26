@@ -5,7 +5,7 @@ import { BinModel } from "../mongo/Bin";
 import { TrashModel } from "../mongo/Trash";
 import { datesAreOnSameDay } from "./utils";
 
-export const jobTakeOutTrash = cron.schedule('*/1 * * * *', async () => {//every 1 min
+export const jobTakeOutTrash = cron.schedule('*/5 * * * *', async () => {//every 5 min
     //const numBin = Math.round(Math.random() * 3) + 1;
     const numBin = 1;
     const getRandomTrash = () => {
@@ -63,7 +63,7 @@ export const jobTakeOutTrash = cron.schedule('*/1 * * * *', async () => {//every
 });
 
 //reset all bin at 22h each day
-export const jobClearBin = cron.schedule('0 50 23 * * *', async () => {
+export const jobClearBin = cron.schedule('00 00 22 * * *', async () => {
     try {
         const allBins: Bin[] = await BinModel.aggregate().match({}).project({ "_id": 1 });
         if (allBins.length) {
