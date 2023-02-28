@@ -39,4 +39,4 @@ app.listen(process.env.PORT, () => {
 });
 
 // jobTakeOutTrash.start();
-jobClearBin.start();
+//jobClearBin.start();
