@@ -8,7 +8,8 @@ import binRoute from './route/bin';
 
 import bodyParser from 'body-parser';
 import cors from 'cors';
-import { jobClearBin, jobTakeOutTrash } from "./utils/cron";
+import { startAMQPConsumer } from "./utils/amqp";
+import { jobTakeOutTrash } from "./utils/cron";
 
 const app = express();
 
@@ -38,5 +39,5 @@ app.listen(process.env.PORT, () => {
     console.log(`Example app listening on port ${process.env.PORT}`)
 });
 
-// jobTakeOutTrash.start();
-// jobClearBin.start();
+startAMQPConsumer();
+//jobTakeOutTrash.start();
