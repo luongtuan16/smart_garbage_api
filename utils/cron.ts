@@ -63,7 +63,7 @@ export const jobTakeOutTrash = cron.schedule('0 */5 * * *', async () => {//every
 });
 
 //reset all bin at 22h each day
-export const jobClearBin = cron.schedule('00 00 22 * * *', async () => {
+export const jobClearBin = cron.schedule('0 22 * * *', async () => {
     try {
         const allBins: Bin[] = await BinModel.aggregate().match({}).project({ "_id": 1 });
         if (allBins.length) {
