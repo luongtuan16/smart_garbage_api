@@ -209,7 +209,7 @@ router.post('/statistic-trash', verifyToken, async (req, res) => {
             createdAt: { $gte: beginOfTheDay }
         }).sort({ createdAt: "desc" });
 
-        const statisticDays = new Array(10).fill(0).map((_, idx) => moment().subtract(idx, 'd').toDate());
+        const statisticDays = new Array(numDay).fill(0).map((_, idx) => moment().subtract(idx, 'd').toDate());
 
         return res.status(200).json(bins.map(bin => {
             const trashesStatisticOfBin = trashesResp.filter(item => item.binId.toString() === bin._id.toString());
