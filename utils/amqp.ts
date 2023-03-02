@@ -1,8 +1,11 @@
 import amqplib from "amqplib";
 import { Types } from "mongoose";
+import { BinModel } from "../mongo/Bin";
+import { ManageModel } from "../mongo/Manage";
 import { TrashModel } from "../mongo/Trash";
 import { QUEUE_TRASH } from "./constants";
 import { datesAreOnSameDay } from "./utils";
+import { sendNotification } from "./firebaseApi";
 
 export async function startAMQPConsumer() {
     try {
@@ -26,6 +29,15 @@ export async function startAMQPConsumer() {
             const { binId, organic, inorganic, recyclable } = <{ binId: string, organic: number, inorganic: number, recyclable: number }>
                 JSON.parse(message.content.toString());
             if (binId !== undefined && organic !== undefined && inorganic !== undefined && recyclable !== undefined) {// save
+                if (organic + inorganic + recyclable >= 240) {//send notification to device
+                    const bin = await BinModel.findById(binId);
+                    const managements = await ManageModel.find({ binId }).populate('userId');
+                    if (managements.length && bin) {
+                        const deviceIds = managements.map((manageMap: any) => manageMap?.userId?.deviceId).filter(deviceId => deviceId);
+                        const message = `Thùng rác ${bin.name} sắp đầy rồi!`;
+                        sendNotification(deviceIds, message);
+                    }
+                }
                 const trashes = await TrashModel.find({ binId: new Types.ObjectId(binId) }).sort({ createdAt: "desc" }).limit(1);
                 if (trashes.length) {
                     const trash = trashes[0];

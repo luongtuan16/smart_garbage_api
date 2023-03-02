@@ -6,63 +6,6 @@ import { TrashModel } from "../mongo/Trash";
 import { sendMessageToBroker } from "./amqp";
 import { datesAreOnSameDay } from "./utils";
 
-export const jobTakeOutTrash1 = cron.schedule('0 */5 * * *', async () => {//every 5 hours
-    //const numBin = Math.round(Math.random() * 3) + 1;
-    const numBin = 1;
-    const getRandomTrash = () => {
-        const ran = Math.random();
-        return ran >= 0.5 ? Math.round(ran * 200 - 100) : 0;
-    }
-    const organic = getRandomTrash();
-    const inorganic = getRandomTrash();
-    const recyclable = getRandomTrash();
-    if (!organic && !inorganic && !recyclable)
-        return;
-    try {
-        const binsToUpdate: Bin[] = await BinModel.aggregate().match({})
-            .sample(numBin).project({ "_id": 1 });
-        if (!binsToUpdate.length)
-            return;
-        const binId = binsToUpdate[0]._id;
-        console.log({ organic, inorganic, recyclable, binId });
-        const trashes = await TrashModel.find({ binId: new Types.ObjectId(binId) }).sort({ createdAt: "desc" }).limit(1);
-        if (trashes.length) {
-            const trash = trashes[0];
-            const timeNow = Date.now();
-            if (datesAreOnSameDay(new Date(timeNow), new Date(trash.createdAt))) {
-                //same day => update record
-                await TrashModel.findByIdAndUpdate(trash._id,
-                    {
-                        $set: {
-                            organic: organic + trash.organic <= 100 ? organic + trash.organic : trash.organic,
-                            inorganic: inorganic + trash.inorganic <= 100 ? inorganic + trash.inorganic : trash.inorganic,
-                            recyclable: recyclable + trash.recyclable <= 100 ? recyclable + trash.recyclable : trash.recyclable,
-                        }
-                    }, { new: true });
-            } else {//another day => new record 
-                await TrashModel.create({
-                    binId,
-                    organic: organic + trash.organic <= 100 ? organic + trash.organic : trash.organic,
-                    inorganic: inorganic + trash.inorganic <= 100 ? inorganic + trash.inorganic : trash.inorganic,
-                    recyclable: recyclable + trash.recyclable <= 100 ? recyclable + trash.recyclable : trash.recyclable,
-                });
-            }
-        } else {
-            await TrashModel.create({
-                binId,
-                organic,
-                inorganic,
-                recyclable
-            });
-        }
-    } catch (error) {
-        console.log(error);
-    }
-}, {
-    scheduled: true,
-    timezone: "Asia/Bangkok"
-});
-
 //reset all bin at 22h each day
 export const jobClearBin = cron.schedule('0 22 * * *', async () => {
     try {
@@ -84,7 +27,7 @@ export const jobClearBin = cron.schedule('0 22 * * *', async () => {
     timezone: "Asia/Bangkok"
 });
 
-export const jobTakeOutTrash = cron.schedule('*/10 * * * * *', async () => {//every 5 sec
+export const jobTakeOutTrash = cron.schedule('*/1 * * * *', async () => {//every 1 min
     //const numBin = Math.round(Math.random() * 3) + 1;
     const numBin = 1;
     const getRandomTrash = () => {
