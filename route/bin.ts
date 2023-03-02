@@ -76,8 +76,8 @@ router.get('/:id', verifyToken, async (req, res) => {
 
 //get all bins
 router.get('/', verifyToken, async (req, res) => {
-    const offset = req.query.offset ?? 0;
-    const limit = req.query.limit ?? 0;
+    const offset = Number(req.query.offset) ?? 0;
+    const limit = Number(req.query.limit) ?? 0;
     try {
         const binResp = await BinModel.find().sort({ createAt: "desc" }).skip(offset).limit(limit);
         const bins = binResp.map(item => item._doc);
@@ -154,27 +154,9 @@ router.post('/add-trash', verifyAdminToken, async (req, res) => {
     }
 });
 
-//clear bin
+//clear all bin
 router.post('/clear-bin', verifyAdminToken, async (req, res) => {
     try {
-        // const beginOfDay = moment().startOf('day').toDate();
-        // const endOfDay = moment().endOf('day').toDate();
-        // const trashesInDay = await TrashModel.find({ createdAt: { $gte: beginOfDay, $lt: endOfDay } });
-        // if (trashesInDay.length) {
-        //     await TrashModel.updateMany({ createdAt: { $gte: beginOfDay, $lt: endOfDay } }, { $set: { organic: 0, inorganic: 0, recyclable: 0 } })
-        // }
-        // console.log(trashesInDay)
-        // const allBins: Bin[] = await BinModel.aggregate().match({}).project({ "_id": 1 });
-        // const binsWithoutTrashInDay = allBins.filter(bin => !trashesInDay.find(trash => trash.binId.toString() === bin._id.toString()));
-        // if (binsWithoutTrashInDay.length) {
-        //     console.log(binsWithoutTrashInDay)
-        //     TrashModel.insertMany(binsWithoutTrashInDay.map(bin => ({
-        //         binId: bin._id,
-        //         organic: 0,
-        //         inorganic: 0,
-        //         recyclable: 0,
-        //     })));
-        // }
         const allBins: Bin[] = await BinModel.aggregate().match({}).project({ "_id": 1 });
         if (allBins.length) {
             const result = await TrashModel.insertMany(allBins.map(bin => ({
