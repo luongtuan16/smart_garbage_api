@@ -65,7 +65,12 @@ router.get('/:id', verifyToken, async (req, res) => {
         return res.status(301).json("Bin not exist");
     const currentTrash = await TrashModel.find({ binId: bin._id }).sort({ createdAt: "desc" }).limit(1);
     if (!currentTrash.length)
-        return res.status(200).json(bin);
+        return res.status(200).json({
+            ...bin._doc,
+            organic: 0,
+            inorganic: 0,
+            recyclable: 0,
+        });
     return res.status(200).json({
         ...bin._doc,
         organic: currentTrash[0].organic,
