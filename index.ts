@@ -39,5 +39,5 @@ app.listen(process.env.PORT, () => {
     console.log(`Example app listening on port ${process.env.PORT}`)
 });
 
-startAMQPConsumer();
-//jobTakeOutTrash.start();
+//startAMQPConsumer();
+jobTakeOutTrash.start();
