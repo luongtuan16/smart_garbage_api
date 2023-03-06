@@ -27,7 +27,7 @@ export const jobClearBin = cron.schedule('0 22 * * *', async () => {
     timezone: "Asia/Bangkok"
 });
 
-export const jobTakeOutTrash = cron.schedule('*/1 * * * *', async () => {//every 1 min
+export const jobTakeOutTrash = cron.schedule('*/5 * * * * *', async () => {//every 1 min
     //const numBin = Math.round(Math.random() * 3) + 1;
     const numBin = 1;
     const getRandomTrash = () => {
@@ -44,9 +44,9 @@ export const jobTakeOutTrash = cron.schedule('*/1 * * * *', async () => {//every
             .sample(numBin).project({ "_id": 1 });
         if (!binsToUpdate.length)
             return;
-        const binId = binsToUpdate[0]._id;
-        console.log({ organic, inorganic, recyclable, binId });
+        const binId = binsToUpdate[0]._id.toString();
         await sendMessageToBroker(JSON.stringify({ organic, inorganic, recyclable, binId }));
+        console.log(`Sent message: ${JSON.stringify({ organic, inorganic, recyclable, binId })}`);
     } catch (error) {
         console.log(error);
     }
